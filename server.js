@@ -33,7 +33,7 @@ app.get('/:word', function (req, res) {
     var index = parseInt(crypto.createHash('md5').update(word).digest("hex")[0], 16);
     dbs[index].serialize(() => {
         console.log("Word: " + word + ", index: " + index);
-        dbs[index].each("select * from definitions d join synonyms s on d.key = s.key where d.word = '" + req.params.word + "'", (err, row) => {
+        dbs[index].each("select * from definitions d join synonyms s on d.key = s.key where d.word = ?", req.params.word, (err, row) => {
             if (err) {
               console.error(err.message);
             }
