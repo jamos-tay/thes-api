@@ -27,13 +27,14 @@ app.get('/:word', function (req, res) {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     //res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     
-    var word = req.params.word;
+    var word = req.params.word.toLowerCase();
+    
     var crypto = require('crypto');
     var definitions = {};
     var index = parseInt(crypto.createHash('md5').update(word).digest("hex")[0], 16);
     dbs[index].serialize(() => {
-        console.log("Word: " + word + ", index: " + index);
-        dbs[index].each("select * from definitions d join synonyms s on d.key = s.key where d.word = ?", req.params.word, (err, row) => {
+        console.log("Word: " + word, + ", index: " + index);
+        dbs[index].each("select * from definitions d join synonyms s on d.key = s.key where d.word = ?", word, (err, row) => {
             if (err) {
               console.error(err.message);
             }
